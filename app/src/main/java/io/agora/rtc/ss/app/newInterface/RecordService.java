@@ -24,7 +24,7 @@ import io.agora.rtc.video.VideoCanvas;
 
 public class RecordService extends Service {
 
-    //RTC的对象
+    private static final String TAG = RecordService.class.getSimpleName();
     private RtcEngine mRtcEngine;
     private EglBase.Context mSharedContext;
     private MediaProjection mediaProjection;
@@ -33,7 +33,7 @@ public class RecordService extends Service {
     private SurfaceView previewSurfaceView;
     private boolean isEnableViewRecord = false;
     private static final String LOG_TAG = "RecordService" + " tjy";
-    private boolean running=false;
+    private boolean running = false;
     private String channelName;
     private int width = 720;
     private int height = 1080;
@@ -78,62 +78,53 @@ public class RecordService extends Service {
         this.dpi = dpi;
     }
 
-    public void setRecordView(View view){
+    public void setRecordView(View view) {
         this.recordView = view;
     }
 
     //开始record进程
     public boolean startRecord() {
-        Log.i("TJY","initRtcEngine start ");
+        Log.i(TAG, "initRtcEngine start ");
 
-        Log.i("TJY","initRtcEngine over ");
-        //初始化texture的设置,并在initSurfaceTexture中显示
+        Log.i(TAG, "initRtcEngine over ");
         initRtcEngine();
-        if(isEnableViewRecord){
+        if (isEnableViewRecord) {
             initSurfaceRGBA();
-        }else{
+        } else {
             initSurfaceTexture();
         }
-        Log.i("TJY","initSurfaceTexture over ");
+        Log.i(TAG, "initSurfaceTexture over ");
         //joinChannel
         joinChannel();
-        //mediaRecorder.start();
         running = true;
         return true;
     }
 
-    //结束record进程
     public boolean stopRecord() {
         if (!running) {
             return false;
         }
-        Log.i("TJY","stopRecord");
+        Log.i(TAG, "stopRecord");
         running = false;
-/*        if(isEnableViewRecord){
-            viewSource.onStop();
-            viewSource =null;
-        }else{
-            textureSource.onStop();
-            textureSource =null;
-        }*/
         releasTextureSource();
         releaseRGBASource();
         leaveChannel();
-        Log.i("TJY","stopRecord over");
+        Log.i(TAG, "stopRecord over");
         return true;
     }
 
     public void initRtcEngine() {
         if (mRtcEngine == null) {
             try {
-                Log.i("TJY","create mRtcEngine");
+                Log.i(TAG, "create mRtcEngine");
                 mRtcEngine = RtcEngine.create(getApplicationContext(), getString(R.string.agora_app_id), new IRtcEngineEventHandler() {
                     @Override
                     public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
                         Log.i(LOG_TAG, "onJoinChannelSuccess" + channel + " " + elapsed);
                     }
+
                     @Override
-                    public void onLeaveChannel (RtcStats stats ) {
+                    public void onLeaveChannel(RtcStats stats) {
                         Log.i(LOG_TAG, "onLeaveChannel");
                     }
 
@@ -171,48 +162,30 @@ public class RecordService extends Service {
     }
 
     public void initSurfaceTexture() {
-        //初始化source
-        //if(source == null) {
-            Log.i("TJY", "initSurfaceTexture");
-            //mRtcEngine.stopPreview();
-            //just a test。。。。。
-            //source = new AgoraTexture2DRecord_test(this, this.width, this.height);
-            releasTextureSource();
-            releaseRGBASource();
-            mRtcEngine.stopPreview();
-            textureSource = new AgoraTexture2DRecord(this, this.width, this.height, this.dpi, this.mediaProjection);
-            //}
-            //source.setSize(this.dpi);
-            //source.setProjection(mediaProjection);
-            mSharedContext =  textureSource.getEglContext();
+        Log.i(TAG, "initSurfaceTexture");
+        releasTextureSource();
+        releaseRGBASource();
+        mRtcEngine.stopPreview();
+        textureSource = new AgoraTexture2DRecord(this, this.width, this.height, this.dpi, this.mediaProjection);
+        mSharedContext = textureSource.getEglContext();
 
-            //初始化view
-            AgoraSurfaceView render = new AgoraSurfaceView(this);
-            render.setZOrderOnTop(true);
-            render.setZOrderMediaOverlay(true);
-            render.init(mSharedContext);
-            render.setBufferType(MediaIO.BufferType.TEXTURE);
-            //这里是本地的render格式，与remote的render还不一样，这里如果设置的不一样，不影响remote的格式
-            render.setPixelFormat(MediaIO.PixelFormat.TEXTURE_OES);
+        AgoraSurfaceView render = new AgoraSurfaceView(this);
+        render.setZOrderOnTop(true);
+        render.setZOrderMediaOverlay(true);
+        render.init(mSharedContext);
+        render.setBufferType(MediaIO.BufferType.TEXTURE);
+        render.setPixelFormat(MediaIO.PixelFormat.TEXTURE_OES);
 
-            mRtcEngine.setLocalVideoRenderer(render);
-            previewSurfaceView = render;
-            listener.surfaceIsReady(previewSurfaceView);
-            mRtcEngine.setVideoSource(textureSource);
-            //提醒activity初始化preview的部分
-
-            //开始preview
+        mRtcEngine.setLocalVideoRenderer(render);
+        previewSurfaceView = render;
+        listener.surfaceIsReady(previewSurfaceView);
+        mRtcEngine.setVideoSource(textureSource);
         mRtcEngine.startPreview();
-        //}
     }
 
-    public void initSurfaceRGBA(){
+    public void initSurfaceRGBA() {
         mRtcEngine.stopPreview();
-        Log.i("TJY","initSurfaceRGBA");
-/*        if(textureSource!=null){
-            textureSource.onStop();
-            textureSource = null;
-        }*/
+        Log.i(TAG, "initSurfaceRGBA");
         releasTextureSource();
         releaseRGBASource();
         viewSource = new ViewSharingCapturer(this.recordView);
@@ -228,31 +201,28 @@ public class RecordService extends Service {
         previewSurfaceView = render;
         listener.surfaceIsReady(previewSurfaceView);
         mRtcEngine.setVideoSource(viewSource);
-        //提醒activity初始化preview的部分
-
         mRtcEngine.startPreview();
     }
 
-    public void releasTextureSource(){
-        if(textureSource!=null){
+    public void releasTextureSource() {
+        if (textureSource != null) {
             textureSource.sourceRelease();
             textureSource = null;
         }
     }
 
-    public void releaseRGBASource(){
-        if(viewSource!=null){
-            viewSource= null;
+    public void releaseRGBASource() {
+        if (viewSource != null) {
+            viewSource = null;
         }
 
     }
 
-    public void setChannelName(String channelName){
+    public void setChannelName(String channelName) {
         this.channelName = channelName;
     }
 
     public void joinChannel() {
-        //mRtcEngine.joinChannel(null, "1234321", "", 0);
         mRtcEngine.joinChannel(null, channelName, "", 0);
     }
 
@@ -276,10 +246,10 @@ public class RecordService extends Service {
 
     public void setEnableViewRecord(boolean enableViewRecord) {
         isEnableViewRecord = enableViewRecord;
-        if(running){
-            if(isEnableViewRecord){
+        if (running) {
+            if (isEnableViewRecord) {
                 initSurfaceRGBA();
-            }else{
+            } else {
                 initSurfaceTexture();
             }
         }

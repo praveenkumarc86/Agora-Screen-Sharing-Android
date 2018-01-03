@@ -31,7 +31,7 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
     private static final int STORAGE_REQUEST_CODE = 102;
     private static final int AUDIO_REQUEST_CODE = 103;
     private static int[] PICTURE_ARRAY = null;
-    private static final String LOG_TAG = "MainActivity" + " tjy";
+    private static final String TAG = "MainActivity" ;
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
     private RecordService recordService;
@@ -49,11 +49,11 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("TJY","onCreate：");
+        Log.i(TAG, "onCreate：");
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
 
         setContentView(R.layout.activity_new_interface);
-        viewLayout = (LinearLayout)findViewById(R.id.view_record_layout);
+        viewLayout = (LinearLayout) findViewById(R.id.view_record_layout);
         recordView = (ImageView) findViewById(R.id.recordView);
         startFullBtn = (Button) findViewById(R.id.start_full_record);
         enableViewBox = (CheckBox) findViewById(R.id.enable_view_record);
@@ -84,7 +84,7 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
                     recordService.stopRecord();
                     startFullBtn.setText(R.string.start_full_record);
                 } else {
-                    if(channelName.getText().toString().length()<=0){
+                    if (channelName.getText().toString().length() <= 0) {
                         return;
                     }
                     Intent captureIntent = projectionManager.createScreenCaptureIntent();
@@ -114,19 +114,19 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
         if (ContextCompat.checkSelfPermission(NewInterfaceActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_REQUEST_CODE);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_REQUEST_CODE);
         }
 
         if (ContextCompat.checkSelfPermission(NewInterfaceActivity.this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
+                    new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
         }
 
         Intent intent = new Intent(this, RecordService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_REQ_ID_RECORD_AUDIO) && checkSelfPermission(Manifest.permission.CAMERA, PERMISSION_REQ_ID_CAMERA)) {
-            Log.i("TJY","check permission ok");
+            Log.i(TAG, "check permission ok");
         }
     }
 
@@ -141,7 +141,7 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
         if (requestCode == RECORD_REQUEST_CODE && resultCode == RESULT_OK) {
             recordService.setChannelName(channelName.getText().toString());
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
-            Log.i("TJY", "init mediaProjection：" + mediaProjection + " recordView:" + recordView);
+            Log.i(TAG, "init mediaProjection：" + mediaProjection + " recordView:" + recordView);
             recordService.setMediaProject(mediaProjection);
             recordService.startRecord();
             startFullBtn.setText(R.string.stop_full_record);
@@ -170,13 +170,12 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
 
     @Override
     public void surfaceIsReady(View previewSurface) {
-        Log.i(LOG_TAG, "set surfaceIsReady");
+        Log.i(TAG, "set surfaceIsReady");
         localView = previewSurface;
     }
 
-    public void showLocalView(){
-        //先移除，再添加的套路
-        if(localView!=null){
+    public void showLocalView() {
+        if (localView != null) {
             removeLocalView();
             FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
             container.addView(localView);
@@ -194,7 +193,7 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
     }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
-        Log.i(LOG_TAG, "checkSelfPermission " + permission + " " + requestCode);
+        Log.i(TAG, "checkSelfPermission " + permission + " " + requestCode);
         if (ContextCompat.checkSelfPermission(this,
                 permission)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -209,7 +208,7 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
 
     public void onChangePicture(View view) {
         int temp = (pictureCount % PICTURE_ARRAY.length);
-        Log.i("TJY","temp："+temp);
+        Log.i(TAG, "temp：" + temp);
         recordView.setImageResource(PICTURE_ARRAY[temp]);
         pictureCount++;
     }

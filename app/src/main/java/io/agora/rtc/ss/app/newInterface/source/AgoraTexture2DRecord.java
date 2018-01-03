@@ -20,14 +20,14 @@ import static io.agora.rtc.mediaio.MediaIO.PixelFormat.TEXTURE_OES;
 
 //这里可能是要学习他的过程.....即，改为屏幕录制的模式.....
 public class AgoraTexture2DRecord extends TextureSource {
-    private static final String TAG = AgoraTexture2DRecord.class.getSimpleName()+" tjy";
+    private static final String TAG = AgoraTexture2DRecord.class.getSimpleName();
     private Context mContext;
     private Camera camera;
     private Camera.CameraInfo info;
     private int width = 320;
     private int height = 240;
     private int dpi;
-    private int rotation =0;
+    private int rotation = 0;
     //和record相关
 
     private VirtualDisplay virtualDisplay;
@@ -35,7 +35,7 @@ public class AgoraTexture2DRecord extends TextureSource {
 
     public AgoraTexture2DRecord(Context context, int width, int height, int dpi, MediaProjection mediaProjection) {
         super(null, width, height);
-        Log.i("TJY","init AgoraTexture2DRecord");
+        Log.i(TAG, "init AgoraTexture2DRecord");
         this.width = width;
         this.height = height;
         this.mContext = context;
@@ -49,9 +49,8 @@ public class AgoraTexture2DRecord extends TextureSource {
     public void onTextureFrameAvailable(int oesTextureId, float[] transformMatrix, long timestampNs) {
         super.onTextureFrameAvailable(oesTextureId, transformMatrix, timestampNs);
         //可以在这里，对oexTextureid进行处理
-        Log.i("TJY ","try to mConsurer_2。。。。");
-        if (mConsumer!=null&&mConsumer.get() != null) {
-            Log.i("TJY ","try to mConsurer_1。。。。");
+        Log.i(TAG, "try to mConsurer_2。。。。");
+        if (mConsumer != null && mConsumer.get() != null) {
             mConsumer.get().consumeTextureFrame(oesTextureId, TEXTURE_OES.intValue(), mWidth, mHeight, rotation, System.currentTimeMillis(), transformMatrix);
         }
     }
@@ -59,7 +58,7 @@ public class AgoraTexture2DRecord extends TextureSource {
     //在这里绑定camera
     @Override
     protected boolean onCapturerOpened() {
-        Log.i(TAG,"onCapturerOpened");
+        Log.i(TAG, "onCapturerOpened");
         createVirtualDisplay();
         return true;
     }
@@ -67,26 +66,24 @@ public class AgoraTexture2DRecord extends TextureSource {
     @Override
     protected boolean onCapturerStarted() {
         //camera.startPreview();
-        Log.i(TAG,"onCapturerStarted");
+        Log.i(TAG, "onCapturerStarted");
         return true;
     }
 
     @Override
     protected void onCapturerStopped() {
         //camera.stopPreview();
-        Log.i(TAG,"onCapturerStopped");
+        Log.i(TAG, "onCapturerStopped");
     }
 
     @Override
     protected void onCapturerClosed() {
-        //releaseCamera();
 
-
-        Log.i(TAG,"onCapturerClosed");
+        Log.i(TAG, "onCapturerClosed");
     }
 
-    public void sourceRelease(){
-        Log.i(TAG,"sourceRelease");
+    public void sourceRelease() {
+        Log.i(TAG, "sourceRelease");
         releaseProjection();
         release();
     }
@@ -94,20 +91,20 @@ public class AgoraTexture2DRecord extends TextureSource {
 
     // record operations
     private void createVirtualDisplay() {
-        Log.i(TAG,"createVirtualDisplay:"+mediaProjection);
+        Log.i(TAG, "createVirtualDisplay:" + mediaProjection);
         Surface inputSurface = new Surface(getSurfaceTexture());
-        if(virtualDisplay ==null){
+        if (virtualDisplay == null) {
             virtualDisplay = mediaProjection.createVirtualDisplay("MainScreen", width, height, dpi,
                     DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, inputSurface, null, null);
         }
     }
 
-    public void releaseProjection(){
-        Log.i("TJY","releaseProjection");
-        if(virtualDisplay!=null){
+    public void releaseProjection() {
+        Log.i(TAG, "releaseProjection");
+        if (virtualDisplay != null) {
             virtualDisplay.release();
         }
-        virtualDisplay =null;
+        virtualDisplay = null;
     }
 
 }
