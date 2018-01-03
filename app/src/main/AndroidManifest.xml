@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,17 +16,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HelloAgoraScreenSharingActivity">
+        <activity android:name=".InitActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".oldInterface.HelloAgoraScreenSharingActivity" />
 
         <activity
-            android:name="io.agora.rtc.ss.capture.ScreenCapture$ScreenCaptureAssistantActivity"
-            android:theme="@android:style/Theme.Translucent" />
+            android:screenOrientation="portrait"
+            android:name=".newInterface.NewInterfaceActivity"/>
+        <activity
+        android:name=".oldInterface.capture.ScreenCapture$ScreenCaptureAssistantActivity"
+        android:theme="@android:style/Theme.Translucent" />
+
+        <service android:name=".newInterface.RecordService"/>
     </application>
 
 </manifest>

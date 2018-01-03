@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.agora.rtc.ss.app.HelloAgoraScreenSharingActivity">
+    tools:context="io.agora.rtc.ss.app.oldInterface.HelloAgoraScreenSharingActivity">
 
     <TextView
         android:id="@+id/channel_name_info"

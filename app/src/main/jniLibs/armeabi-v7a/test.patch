@@ -1,0 +1,104 @@
+commit 1245e8f62b73da64b252c7b9195bcb595564dd56
+Author: TongJiangyong <1246376353@qq.com>
+Date:   Wed Dec 20 12:20:00 2017 +0800
+
+    Android: PEOPLE17-58
+    RecycleView pool only support serveral instance ,which may cause picture
+    repeat
+
+diff --git a/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoUserStatusHolder.java b/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoUserStatusHolder.java
+index 5a70baaf..cdfa730a 100644
+--- a/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoUserStatusHolder.java
++++ b/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoUserStatusHolder.java
+@@ -1,6 +1,7 @@
+ package io.agora.premium.ui;
+ 
+ import android.support.v7.widget.RecyclerView;
++import android.view.SurfaceView;
+ import android.view.View;
+ import android.widget.ImageView;
+ import android.widget.LinearLayout;
+@@ -11,7 +12,9 @@ import io.agora.premium.R;
+ 
+ public class VideoUserStatusHolder extends RecyclerView.ViewHolder {
+     public final RelativeLayout mMaskView;
+-
++    public SurfaceView tempView;
++    private boolean isUsed = false;
++    private boolean isAddView = false;
+     public final ImageView mAvatar;
+     public final ImageView mIndicator;
+ 
+@@ -38,4 +41,20 @@ public class VideoUserStatusHolder extends RecyclerView.ViewHolder {
+ 
+         mVideoMetaData = (TextView) v.findViewById(R.id.video_info_metadata);
+     }
++
++    public boolean getIsUsed() {
++        return isUsed;
++    }
++
++    public void setIsUsed(boolean isUsed) {
++        this.isUsed = isUsed;
++    }
++
++    public boolean getIsAddView() {
++        return isAddView;
++    }
++
++    public void setIsAddView(boolean isAddView) {
++        this.isAddView = isAddView;
++    }
+ }
+diff --git a/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoViewAdapter.java b/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoViewAdapter.java
+index 335220ff..d908287c 100644
+--- a/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoViewAdapter.java
++++ b/Android/AgoraPremium/app/src/main/java/io/agora/premium/ui/VideoViewAdapter.java
+@@ -161,20 +161,39 @@ public abstract class VideoViewAdapter extends RecyclerView.Adapter<RecyclerView
+             }
+         });
+ 
+-        if (holderView.getChildCount() == mDefaultChildItem) {
+-            SurfaceView target = user.mView;
++        SurfaceView target = user.mView;
++        if (!myHolder.getIsUsed()) {
+             VideoViewAdapterUtil.stripView(target);
+-            if (this.getClass().toString().contains(SmallVideoViewAdapter.class.getSimpleName())) {
+-                target.setZOrderMediaOverlay(true);
+-            } else {
+-                target.setZOrderMediaOverlay(false);
++            addViewInHolder(myHolder, target);
++            myHolder.setIsAddView(true);
++            myHolder.setIsUsed(true);
++        } else {
++            if (myHolder.tempView != target) {
++                if (myHolder.getIsAddView()) {
++                    VideoViewAdapterUtil.stripView(myHolder.tempView);
++                    myHolder.setIsAddView(false);
++                }
++                VideoViewAdapterUtil.stripView(target);
++                addViewInHolder(myHolder, target);
++                myHolder.setIsAddView(true);
+             }
+-            holderView.addView(target, 0, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+         }
+-
+         VideoViewAdapterUtil.renderExtraData(mContext, user, myHolder);
+     }
+ 
++    public void addViewInHolder(VideoUserStatusHolder holder, SurfaceView view) {
++        if (this.getClass().toString().contains(SmallVideoViewAdapter.class.getSimpleName())) {
++            view.setZOrderMediaOverlay(true);
++        } else {
++            view.setZOrderMediaOverlay(false);
++        }
++        holder.tempView = view;
++        FrameLayout holderView = (FrameLayout) holder.itemView;
++        holderView.addView(view, 0, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
++        holder.setIsAddView(true);
++    }
++
++
+     @Override
+     public int getItemCount() {
+         log.debug("getItemCount " + mUsers.size());
