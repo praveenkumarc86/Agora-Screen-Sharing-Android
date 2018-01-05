@@ -175,8 +175,10 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
     }
 
     public void showLocalView() {
-        if (localView != null) {
+        Log.i("TJY","try to showLocalView");
+        if (localView != null&&enableLocal.isChecked()) {
             removeLocalView();
+            Log.i("TJY","showLocalView");
             FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
             container.addView(localView);
             container.setVisibility(View.VISIBLE);
