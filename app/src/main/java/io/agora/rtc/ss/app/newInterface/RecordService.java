@@ -17,7 +17,7 @@ import io.agora.rtc.gl.EglBase;
 import io.agora.rtc.mediaio.AgoraSurfaceView;
 import io.agora.rtc.mediaio.MediaIO;
 import io.agora.rtc.ss.app.R;
-import io.agora.rtc.ss.app.newInterface.source.AgoraTexture2DRecord;
+import io.agora.rtc.ss.app.newInterface.source.AgoraTextureRecord;
 import io.agora.rtc.ss.app.newInterface.source.ViewSharingCapturer;
 import io.agora.rtc.video.VideoCanvas;
 
@@ -28,7 +28,7 @@ public class RecordService extends Service {
     private RtcEngine mRtcEngine;
     private EglBase.Context mSharedContext;
     private MediaProjection mediaProjection;
-    private AgoraTexture2DRecord textureSource;
+    private AgoraTextureRecord textureSource;
     private ViewSharingCapturer viewSource;
     private SurfaceView previewSurfaceView;
     private boolean isEnableViewRecord = false;
@@ -166,7 +166,7 @@ public class RecordService extends Service {
         releasTextureSource();
         releaseRGBASource();
         mRtcEngine.stopPreview();
-        textureSource = new AgoraTexture2DRecord(this, this.width, this.height, this.dpi, this.mediaProjection);
+        textureSource = new AgoraTextureRecord(this, this.width, this.height, this.dpi, this.mediaProjection);
         mSharedContext = textureSource.getEglContext();
 
         AgoraSurfaceView render = new AgoraSurfaceView(this);

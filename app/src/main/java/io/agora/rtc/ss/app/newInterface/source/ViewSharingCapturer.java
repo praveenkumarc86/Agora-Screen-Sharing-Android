@@ -113,15 +113,10 @@ public class ViewSharingCapturer implements IVideoSource {
             for (int y = 0; y < w; y++) {
                 int color = bmp.getPixel(y, x);
                 //rgba
-/*                pixels[k * 4 + 0] = (byte) Color.red(color);
+                pixels[k * 4 + 0] = (byte) Color.red(color);
                 pixels[k * 4 + 1] = (byte) Color.green(color);
                 pixels[k * 4 + 2] = (byte) Color.blue(color);
-                pixels[k * 4 + 3] = (byte) Color.alpha(color);*/
-                //abgr
-              pixels[k * 4 + 3] = (byte) Color.red(color);
-                pixels[k * 4 + 2] = (byte) Color.green(color);
-                pixels[k * 4 + 1] = (byte) Color.blue(color);
-                pixels[k * 4 + 0] = (byte) Color.alpha(color);
+                pixels[k * 4 + 3] = (byte) Color.alpha(color);
                 k++;
             }
         }

@@ -19,8 +19,8 @@ import static io.agora.rtc.mediaio.MediaIO.PixelFormat.TEXTURE_OES;
 
 
 //这里可能是要学习他的过程.....即，改为屏幕录制的模式.....
-public class AgoraTexture2DRecord extends TextureSource {
-    private static final String TAG = AgoraTexture2DRecord.class.getSimpleName();
+public class AgoraTextureRecord extends TextureSource {
+    private static final String TAG = AgoraTextureRecord.class.getSimpleName();
     private Context mContext;
     private Camera camera;
     private Camera.CameraInfo info;
@@ -33,9 +33,9 @@ public class AgoraTexture2DRecord extends TextureSource {
     private VirtualDisplay virtualDisplay;
     private MediaProjection mediaProjection;
 
-    public AgoraTexture2DRecord(Context context, int width, int height, int dpi, MediaProjection mediaProjection) {
+    public AgoraTextureRecord(Context context, int width, int height, int dpi, MediaProjection mediaProjection) {
         super(null, width, height);
-        Log.i(TAG, "init AgoraTexture2DRecord");
+        Log.i(TAG, "init AgoraTextureRecord");
         this.width = width;
         this.height = height;
         this.mContext = context;
@@ -49,7 +49,6 @@ public class AgoraTexture2DRecord extends TextureSource {
     public void onTextureFrameAvailable(int oesTextureId, float[] transformMatrix, long timestampNs) {
         super.onTextureFrameAvailable(oesTextureId, transformMatrix, timestampNs);
         //可以在这里，对oexTextureid进行处理
-        Log.i(TAG, "try to mConsurer_2。。。。");
         if (mConsumer != null && mConsumer.get() != null) {
             mConsumer.get().consumeTextureFrame(oesTextureId, TEXTURE_OES.intValue(), mWidth, mHeight, rotation, System.currentTimeMillis(), transformMatrix);
         }
