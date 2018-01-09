@@ -32,7 +32,7 @@ public class RecordService extends Service {
     private ViewSharingCapturer viewSource;
     private SurfaceView previewSurfaceView;
     private boolean isEnableViewRecord = false;
-    private static final String LOG_TAG = "RecordService" + " tjy";
+    private static final String LOG_TAG = "RecordService";
     private boolean running = false;
     private String channelName;
     private int width = 720;
@@ -82,19 +82,13 @@ public class RecordService extends Service {
         this.recordView = view;
     }
 
-    //开始record进程
     public boolean startRecord() {
-        Log.i(TAG, "initRtcEngine start ");
-
-        Log.i(TAG, "initRtcEngine over ");
         initRtcEngine();
         if (isEnableViewRecord) {
             initSurfaceRGBA();
         } else {
             initSurfaceTexture();
         }
-        Log.i(TAG, "initSurfaceTexture over ");
-        //joinChannel
         joinChannel();
         running = true;
         return true;
@@ -109,7 +103,6 @@ public class RecordService extends Service {
         releasTextureSource();
         releaseRGBASource();
         leaveChannel();
-        Log.i(TAG, "stopRecord over");
         return true;
     }
 
@@ -162,7 +155,6 @@ public class RecordService extends Service {
     }
 
     public void initSurfaceTexture() {
-        Log.i(TAG, "initSurfaceTexture");
         releasTextureSource();
         releaseRGBASource();
         mRtcEngine.stopPreview();
@@ -185,7 +177,6 @@ public class RecordService extends Service {
 
     public void initSurfaceRGBA() {
         mRtcEngine.stopPreview();
-        Log.i(TAG, "initSurfaceRGBA");
         releasTextureSource();
         releaseRGBASource();
         viewSource = new ViewSharingCapturer(this.recordView);

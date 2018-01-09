@@ -25,7 +25,6 @@ public class ViewSharingCapturer implements IVideoSource {
         @Override
         public void run() {
             if (mContentView != null) {
-                Log.i(TAG, "setDrawingCacheEnabled");
                 mContentView.setDrawingCacheEnabled(true);
                 mContentView.buildDrawingCache();
                 Bitmap bmp = mContentView.getDrawingCache();
@@ -35,16 +34,15 @@ public class ViewSharingCapturer implements IVideoSource {
                 byteBufferTemp.put(byteTemp);
                 if (bmp != null&&mIVideoFrameConsumer!=null&&!mCapturerIsPaused) {
 
-                    Log.i(TAG, "try to push rgba......");
                     mIVideoFrameConsumer.consumeByteBufferFrame(
                             byteBufferTemp
                             , AgoraVideoFrame.FORMAT_RGBA, bmp.getWidth(), bmp.getHeight(), 0, System.currentTimeMillis());
-                    Log.i(TAG, "try to push rgba over.....");
+
                 }
                 mContentView.setDrawingCacheEnabled(false);
                 byteBufferTemp = null;
                 if (!mCapturerIsPaused) {
-                    Log.i(TAG, "try to postDelayed rgba again......");
+
                     mFrameProducerHandler.postDelayed(mFrameProducer, mFrameProducerIntervalMillis);
                 }
             }
@@ -76,7 +74,6 @@ public class ViewSharingCapturer implements IVideoSource {
     public boolean onStart() {
         try {
             mCapturerIsPaused = false;
-            Log.i(TAG, "try to onStart mFrameProducerIntervalMillis");
             mFrameProducerHandler.postDelayed(mFrameProducer, mFrameProducerIntervalMillis);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -86,13 +83,13 @@ public class ViewSharingCapturer implements IVideoSource {
     }
 
     public void onStop() {
-        Log.i(TAG, "ViewSharingCapturer onStop");
+        Log.i(TAG, "onStop");
         mCapturerIsPaused = true;
         mFrameProducerHandler.removeCallbacks(mFrameProducer);
     }
 
     public void onDispose() {
-        Log.i(TAG, "ViewSharingCapturer onDispose");
+        Log.i(TAG, "onDispose");
     }
 
     public int getBufferType() {

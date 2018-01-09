@@ -18,7 +18,6 @@ import io.agora.rtc.mediaio.TextureSource;
 import static io.agora.rtc.mediaio.MediaIO.PixelFormat.TEXTURE_OES;
 
 
-//这里可能是要学习他的过程.....即，改为屏幕录制的模式.....
 public class AgoraTextureRecord extends TextureSource {
     private static final String TAG = AgoraTextureRecord.class.getSimpleName();
     private Context mContext;
@@ -28,7 +27,6 @@ public class AgoraTextureRecord extends TextureSource {
     private int height = 240;
     private int dpi;
     private int rotation = 0;
-    //和record相关
 
     private VirtualDisplay virtualDisplay;
     private MediaProjection mediaProjection;
@@ -43,18 +41,14 @@ public class AgoraTextureRecord extends TextureSource {
         this.mediaProjection = mediaProjection;
     }
 
-    //在这里处理回调的每一帧
-    //这里绘制的surface是在哪里绘制到本地的？
     @Override
     public void onTextureFrameAvailable(int oesTextureId, float[] transformMatrix, long timestampNs) {
         super.onTextureFrameAvailable(oesTextureId, transformMatrix, timestampNs);
-        //可以在这里，对oexTextureid进行处理
         if (mConsumer != null && mConsumer.get() != null) {
             mConsumer.get().consumeTextureFrame(oesTextureId, TEXTURE_OES.intValue(), mWidth, mHeight, rotation, System.currentTimeMillis(), transformMatrix);
         }
     }
 
-    //在这里绑定camera
     @Override
     protected boolean onCapturerOpened() {
         Log.i(TAG, "onCapturerOpened");
@@ -64,14 +58,12 @@ public class AgoraTextureRecord extends TextureSource {
 
     @Override
     protected boolean onCapturerStarted() {
-        //camera.startPreview();
         Log.i(TAG, "onCapturerStarted");
         return true;
     }
 
     @Override
     protected void onCapturerStopped() {
-        //camera.stopPreview();
         Log.i(TAG, "onCapturerStopped");
     }
 

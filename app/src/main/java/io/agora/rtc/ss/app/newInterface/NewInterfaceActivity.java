@@ -31,7 +31,7 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
     private static final int STORAGE_REQUEST_CODE = 102;
     private static final int AUDIO_REQUEST_CODE = 103;
     private static int[] PICTURE_ARRAY = null;
-    private static final String TAG = "MainActivity" ;
+    private static final String TAG = "NewInterfaceActivity" ;
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
     private RecordService recordService;
@@ -97,14 +97,11 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
-                // TODO Auto-generated method stub
                 if (isChecked) {
-                    //TODO  enable local preview
                     recordService.setEnableViewRecord(true);
                     viewLayout.setVisibility(View.VISIBLE);
                     recordService.setRecordView(recordView);
                 } else {
-                    //TODO  disable local preview
                     recordService.setEnableViewRecord(false);
                     viewLayout.setVisibility(View.GONE);
                 }
@@ -126,7 +123,6 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
         Intent intent = new Intent(this, RecordService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_REQ_ID_RECORD_AUDIO) && checkSelfPermission(Manifest.permission.CAMERA, PERMISSION_REQ_ID_CAMERA)) {
-            Log.i(TAG, "check permission ok");
         }
     }
 
@@ -141,7 +137,6 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
         if (requestCode == RECORD_REQUEST_CODE && resultCode == RESULT_OK) {
             recordService.setChannelName(channelName.getText().toString());
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
-            Log.i(TAG, "init mediaProjection：" + mediaProjection + " recordView:" + recordView);
             recordService.setMediaProject(mediaProjection);
             recordService.startRecord();
             startFullBtn.setText(R.string.stop_full_record);
@@ -170,15 +165,12 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
 
     @Override
     public void surfaceIsReady(View previewSurface) {
-        Log.i(TAG, "set surfaceIsReady");
         localView = previewSurface;
     }
 
     public void showLocalView() {
-        Log.i("TJY","try to showLocalView");
         if (localView != null&&enableLocal.isChecked()) {
             removeLocalView();
-            Log.i("TJY","showLocalView");
             FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
             container.addView(localView);
             container.setVisibility(View.VISIBLE);
@@ -195,7 +187,6 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
     }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
-        Log.i(TAG, "checkSelfPermission " + permission + " " + requestCode);
         if (ContextCompat.checkSelfPermission(this,
                 permission)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -210,7 +201,6 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
 
     public void onChangePicture(View view) {
         int temp = (pictureCount % PICTURE_ARRAY.length);
-        Log.i(TAG, "temp：" + temp);
         recordView.setImageResource(PICTURE_ARRAY[temp]);
         pictureCount++;
     }
