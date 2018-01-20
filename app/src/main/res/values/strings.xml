@@ -7,7 +7,7 @@
     <!-- For formal released project, please use Dynamic Key
         http://docs.agora.io/en/user_guide/Component_and_Others/Dynamic_Key_User_Guide.html -->
     <!-- Tutorial Step 1 -->
-    <string name="agora_app_id">d954a23118b94ecd9dcdb67b0718d077</string>
+    <string name="agora_app_id"><#YOUR APP_ID></string>
 
     <string name="label_hello_agora">Hello, welcome</string>
     <string name="label_use_old_interface">Test old interface</string>

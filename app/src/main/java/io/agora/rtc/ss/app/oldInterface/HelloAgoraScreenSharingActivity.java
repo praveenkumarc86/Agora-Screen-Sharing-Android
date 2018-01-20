@@ -211,8 +211,7 @@ public class HelloAgoraScreenSharingActivity extends Activity {
             initModules();
             startCapture();
 
-            String channel = "ss_test" + System.currentTimeMillis();
-            channel = "ss_test";
+            String channel = "1234321";
 
             TextView tv = (TextView) findViewById(R.id.channel_name_info);
             tv.setText(getString(R.string.label_channel_info, channel));
@@ -274,9 +273,15 @@ public class HelloAgoraScreenSharingActivity extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-
         deInitModules();
     }
 }

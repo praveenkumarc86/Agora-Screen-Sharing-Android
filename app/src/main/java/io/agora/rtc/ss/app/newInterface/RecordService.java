@@ -59,9 +59,13 @@ public class RecordService extends Service {
         serviceThread.start();
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        leaveChannel();
+        RtcEngine.destroy();
+        mRtcEngine = null;
     }
 
     public void setMediaProject(MediaProjection project) {
@@ -218,8 +222,10 @@ public class RecordService extends Service {
     }
 
     public void leaveChannel() {
-        mRtcEngine.stopPreview();
-        mRtcEngine.leaveChannel();
+        if(mRtcEngine!=null){
+            mRtcEngine.stopPreview();
+            mRtcEngine.leaveChannel();
+        }
         //RtcEngine.destroy();
         //mRtcEngine = null;
     }

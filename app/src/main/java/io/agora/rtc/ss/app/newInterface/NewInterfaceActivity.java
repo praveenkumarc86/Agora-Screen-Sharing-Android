@@ -98,9 +98,9 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
                 if (isChecked) {
-                    recordService.setEnableViewRecord(true);
                     viewLayout.setVisibility(View.VISIBLE);
                     recordService.setRecordView(recordView);
+                    recordService.setEnableViewRecord(true);
                 } else {
                     recordService.setEnableViewRecord(false);
                     viewLayout.setVisibility(View.GONE);
@@ -124,6 +124,12 @@ public class NewInterfaceActivity extends Activity implements SurfaceReadyListen
         bindService(intent, connection, BIND_AUTO_CREATE);
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_REQ_ID_RECORD_AUDIO) && checkSelfPermission(Manifest.permission.CAMERA, PERMISSION_REQ_ID_CAMERA)) {
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
     }
 
     @Override
